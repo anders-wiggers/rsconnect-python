@@ -1396,19 +1396,15 @@ def make_quarto_manifest(
     """
     if environment:
         extra_files = list(extra_files or [])
-    else:
-        extra_files = list(extra_files or [])
     
     base_dir = file_or_directory
     if isdir(file_or_directory):
         # Directory as a Quarto project.
         excludes = list(excludes or []) + [".quarto"]
-    
         project_config = quarto_inspection.get("config", {}).get("project", {})
         output_dir = cast(Union[str, None], project_config.get("output-dir", None))
         if output_dir:
             excludes = excludes + [output_dir]
-    
         files_data = quarto_inspection.get("files", {})
         files_input_data = files_data.get("input", [])
         # files.input is a list of absolute paths to input (rendered)
@@ -1421,16 +1417,13 @@ def make_quarto_manifest(
         for each in files_input_data:
             t, _ = splitext(os.path.relpath(each, file_or_directory))
             excludes = excludes + [t + ".html", t + "_files/**/*"]
-    
         # relevant files don't need to include requirements.txt file because it is
         # always added to the manifest (as a buffer) from the environment contents
         if environment:
             excludes.append(environment.filename)
-    
         relevant_files = _create_quarto_file_list(base_dir, extra_files, excludes)
     else:
         # Standalone Quarto document
-    
         # Use the common directory of the qmd and any extra files as base_dir.
         # This avoids having the subfolder appear in both base_dir and rel_path.
         all_files = [file_or_directory] + extra_files
@@ -1450,13 +1443,10 @@ def make_quarto_manifest(
         env_management_py,
         env_management_r,
     )
-    
     if environment:
-        manifest_add_buffer(manifest, environment.filename, environment.contents)
-    
+        manifest_add_buffer(manifest, environment.filename, environment.contents)    
     for rel_path in relevant_files:
-        manifest_add_file(manifest, rel_path, base_dir)
-    
+        manifest_add_file(manifest, rel_path, base_dir)  
     return manifest, relevant_files
 
 
